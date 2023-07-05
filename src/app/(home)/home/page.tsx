@@ -5,10 +5,10 @@ import * as React from "react";
 export default async function HomePage({}) {
   const user = await getCurrentUser();
 
-  if (!user) return null;
+  if (!user) return null; 
 
   return (
-    <div>
+    <div className="mt-2">
       You are home!! {user.email}
       <LogoutButton />
     </div>
