@@ -1,41 +1,24 @@
-import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import { eq } from "drizzle-orm";
 import { DrizzleAdapter } from "@/lib/auth/drizzle-adapter";
 import { db } from "@/db";
 import { users } from "@/db/schema";
 import type { NextAuthOptions } from "next-auth";
-
-const getGoogleCredentials = () => {
-  const clientId = process.env.GOOGLE_CLIENT_ID;
-  if (!clientId) {
-    throw new Error("no client id provided in .env file");
-  }
-
-  const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-  if (!clientSecret) {
-    throw new Error("no client secret provided in .env file");
-  }
-
-  return {
-    clientId,
-    clientSecret,
-  };
-};
+import { env } from "@/env.mjs";
 
 export const authOptions: NextAuthOptions = {
   adapter: DrizzleAdapter(db),
   session: {
     strategy: "jwt",
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: env.NEXTAUTH_SECRET,
   pages: {
-    signIn: "/login",
+    signIn: "/",
   },
   providers: [
     GoogleProvider({
-      clientId: getGoogleCredentials().clientId,
-      clientSecret: getGoogleCredentials().clientSecret,
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
     }),
   ],
   callbacks: {
