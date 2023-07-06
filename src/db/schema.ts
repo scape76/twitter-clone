@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { InferModel, relations } from "drizzle-orm";
 import {
   datetime,
   index,
@@ -71,6 +71,8 @@ export const users = mysqlTable(
   })
 );
 
+export type User = InferModel<typeof users>;
+
 export const usersRelations = relations(users, ({ many }) => ({
   tweets: many(tweets),
 }));
@@ -92,10 +94,13 @@ export const verificationTokens = mysqlTable(
 );
 
 export const tweets = mysqlTable("tweets", {
-  id: serial('id').primaryKey(),
+  id: serial("id").primaryKey(),
   text: text("text"),
+  created_at: timestamp("created_at").notNull().defaultNow(),
   authorId: varchar("author_id", { length: 255 }),
 });
+
+export type Tweet = InferModel<typeof tweets>;
 
 export const tweetsRelations = relations(tweets, ({ one }) => ({
   author: one(users, {
