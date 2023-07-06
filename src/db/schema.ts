@@ -1,86 +1,105 @@
+import { relations } from "drizzle-orm";
 import {
   datetime,
   index,
   int,
   mysqlTable,
+  serial,
   text,
   timestamp,
   uniqueIndex,
   varchar,
-} from 'drizzle-orm/mysql-core';
+} from "drizzle-orm/mysql-core";
 
 export const accounts = mysqlTable(
-  'accounts',
+  "accounts",
   {
-    id: varchar('id', { length: 255 }).primaryKey().notNull(),
-    userId: varchar('userId', { length: 255 }).notNull(),
-    type: varchar('type', { length: 255 }).notNull(),
-    provider: varchar('provider', { length: 255 }).notNull(),
-    providerAccountId: varchar('providerAccountId', { length: 255 }).notNull(),
-    access_token: text('access_token'),
-    expires_in: int('expires_in'),
-    id_token: text('id_token'),
-    refresh_token: text('refresh_token'),
-    refresh_token_expires_in: int('refresh_token_expires_in'),
-    scope: varchar('scope', { length: 255 }),
-    token_type: varchar('token_type', { length: 255 }),
-    createdAt: timestamp('createdAt').defaultNow().notNull(),
-    updatedAt: timestamp('updatedAt').defaultNow().onUpdateNow().notNull(),
+    id: varchar("id", { length: 255 }).primaryKey().notNull(),
+    userId: varchar("userId", { length: 255 }).notNull(),
+    type: varchar("type", { length: 255 }).notNull(),
+    provider: varchar("provider", { length: 255 }).notNull(),
+    providerAccountId: varchar("providerAccountId", { length: 255 }).notNull(),
+    access_token: text("access_token"),
+    expires_in: int("expires_in"),
+    id_token: text("id_token"),
+    refresh_token: text("refresh_token"),
+    refresh_token_expires_in: int("refresh_token_expires_in"),
+    scope: varchar("scope", { length: 255 }),
+    token_type: varchar("token_type", { length: 255 }),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   },
-  account => ({
+  (account) => ({
     providerProviderAccountIdIndex: uniqueIndex(
-      'accounts__provider__providerAccountId__idx'
+      "accounts__provider__providerAccountId__idx"
     ).on(account.provider, account.providerAccountId),
-    userIdIndex: index('accounts__userId__idx').on(account.userId),
+    userIdIndex: index("accounts__userId__idx").on(account.userId),
   })
 );
 
 export const sessions = mysqlTable(
-  'sessions',
+  "sessions",
   {
-    id: varchar('id', { length: 255 }).primaryKey().notNull(),
-    sessionToken: varchar('sessionToken', { length: 255 }).notNull(),
-    userId: varchar('userId', { length: 255 }).notNull(),
-    expires: datetime('expires').notNull(),
-    created_at: timestamp('created_at').notNull().defaultNow(),
-    updated_at: timestamp('updated_at').notNull().defaultNow().onUpdateNow(),
+    id: varchar("id", { length: 255 }).primaryKey().notNull(),
+    sessionToken: varchar("sessionToken", { length: 255 }).notNull(),
+    userId: varchar("userId", { length: 255 }).notNull(),
+    expires: datetime("expires").notNull(),
+    created_at: timestamp("created_at").notNull().defaultNow(),
+    updated_at: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
   },
-  session => ({
-    sessionTokenIndex: uniqueIndex('sessions__sessionToken__idx').on(
+  (session) => ({
+    sessionTokenIndex: uniqueIndex("sessions__sessionToken__idx").on(
       session.sessionToken
     ),
-    userIdIndex: index('sessions__userId__idx').on(session.userId),
+    userIdIndex: index("sessions__userId__idx").on(session.userId),
   })
 );
 
 export const users = mysqlTable(
-  'users',
+  "users",
   {
-    id: varchar('id', { length: 255 }).primaryKey().notNull(),
-    name: varchar('name', { length: 255 }),
-    email: varchar('email', { length: 255 }).notNull(),
-    emailVerified: timestamp('emailVerified'),
-    image: varchar('image', { length: 255 }),
-    created_at: timestamp('created_at').notNull().defaultNow(),
-    updated_at: timestamp('updated_at').notNull().defaultNow().onUpdateNow(),
+    id: varchar("id", { length: 255 }).primaryKey().notNull(),
+    name: varchar("name", { length: 255 }),
+    email: varchar("email", { length: 255 }).notNull(),
+    emailVerified: timestamp("emailVerified"),
+    image: varchar("image", { length: 255 }),
+    created_at: timestamp("created_at").notNull().defaultNow(),
+    updated_at: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
   },
-  user => ({
-    emailIndex: uniqueIndex('users__email__idx').on(user.email),
+  (user) => ({
+    emailIndex: uniqueIndex("users__email__idx").on(user.email),
   })
 );
 
+export const usersRelations = relations(users, ({ many }) => ({
+  tweets: many(tweets),
+}));
+
 export const verificationTokens = mysqlTable(
-  'verification_tokens',
+  "verification_tokens",
   {
-    identifier: varchar('identifier', { length: 255 }).primaryKey().notNull(),
-    token: varchar('token', { length: 255 }).notNull(),
-    expires: datetime('expires').notNull(),
-    created_at: timestamp('created_at').notNull().defaultNow(),
-    updated_at: timestamp('updated_at').notNull().defaultNow().onUpdateNow(),
+    identifier: varchar("identifier", { length: 255 }).primaryKey().notNull(),
+    token: varchar("token", { length: 255 }).notNull(),
+    expires: datetime("expires").notNull(),
+    created_at: timestamp("created_at").notNull().defaultNow(),
+    updated_at: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
   },
-  verificationToken => ({
-    tokenIndex: uniqueIndex('verification_tokens__token__idx').on(
+  (verificationToken) => ({
+    tokenIndex: uniqueIndex("verification_tokens__token__idx").on(
       verificationToken.token
     ),
   })
 );
+
+export const tweets = mysqlTable("tweets", {
+  id: serial('id').primaryKey(),
+  text: text("text"),
+  authorId: varchar("author_id", { length: 255 }),
+});
+
+export const tweetsRelations = relations(tweets, ({ one }) => ({
+  author: one(users, {
+    fields: [tweets.authorId],
+    references: [users.id],
+  }),
+}));

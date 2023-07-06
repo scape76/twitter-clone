@@ -16,8 +16,8 @@ const MainNav: React.FC<MainNavProps> = async ({}) => {
   if (!user) return null;
 
   return (
-    <ScrollArea>
-      <div className="fixed my-2 pr-4 flex h-[calc(100vh-1rem)] flex-col justify-between border-r border-border">
+    <ScrollArea className="w-full">
+      <div className="sticky flex h-screen flex-col justify-between border-r border-border py-2 pr-4">
         <div className="flex flex-col gap-2">
           <Link
             href={"/home"}

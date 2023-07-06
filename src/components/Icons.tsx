@@ -24,6 +24,7 @@ import {
   type Icon as LucideIcon,
   type LucideProps,
   MoreHorizontal,
+  Smile,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -75,4 +76,5 @@ export const Icons = {
     </svg>
   ),
   home: Home,
+  smile: Smile,
 };

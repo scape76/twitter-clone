@@ -7,7 +7,7 @@ import type { NextAuthOptions } from "next-auth";
 import { env } from "@/env.mjs";
 
 export const authOptions: NextAuthOptions = {
-  adapter: DrizzleAdapter(db),
+  adapter: DrizzleAdapter(db as any),
   session: {
     strategy: "jwt",
   },

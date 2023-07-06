@@ -18,32 +18,26 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { User } from "next-auth";
 import { Icons } from "./Icons";
 import { signOut } from "next-auth/react";
+import UserAvatar from "./UserAvatar";
 
 interface UserNavProps {
   user: User;
 }
 
 const UserNav: React.FC<UserNavProps> = ({ user }) => {
-  console.log(user.name?.split(" "));
-  const userLiterals = user.name
-    ?.split(" ")
-    .map((s) => s[0])
-    .join("");
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="flex items-center justify-between">
+        <Button
+          variant="ghost"
+          className="flex h-auto items-center justify-between gap-2"
+        >
           <div className="flex items-center gap-2">
-            <Avatar>
-              <AvatarImage src="https://github.com/shadcn.pnsg" />
-              <AvatarFallback>{userLiterals}</AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col items-start gap-2 text-xs text-ellipsis">
+            <UserAvatar user={{ name: user.name, image: user.image }} />
+            <div className="flex flex-col items-start gap-2 text-ellipsis text-xs">
               <span className="font-bold">{user.name}</span>
               <span className="text-muted-foreground">{user.email}</span>
             </div>
