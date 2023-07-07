@@ -1,3 +1,2 @@
-1. Post operations
-2. Filter the feed in asc order
-3. Infinite scrolling
+- Filter the feed in asc order
+- Infinite scrolling

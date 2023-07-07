@@ -5,10 +5,11 @@ import { Tweet, User } from "@/db/schema";
 import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
 import Link from "next/link";
-import { Icons } from "./Icons";
-import PostOperations from "./PostOperations";
+import TweetOperations from "./TweetOperations";
 import { Button } from "./ui/Button";
 import { getCurrentUser } from "@/lib/session";
+import { asc, desc } from "drizzle-orm";
+import { tweets } from "@/db/schema";
 
 dayjs.extend(relativeTime);
 
@@ -16,11 +17,14 @@ const Feed: React.FC = async ({}) => {
   // get the tweets data
   // depending on users follows
 
-  const tweets = await db.query.tweets.findMany({ with: { author: true } });
+  const _tweets = await db.query.tweets.findMany({
+    with: { author: true },
+    orderBy: [desc(tweets.created_at)],
+  });
 
   return (
     <div>
-      {tweets.map((t) => (
+      {_tweets.map((t) => (
         <PostItem {...t} key={t.id} />
       ))}
     </div>
@@ -59,7 +63,7 @@ async function PostItem(t: Tweet & { author: User | null }) {
         variant={"ghost"}
         className="absolute right-0 top-0"
       >
-        <PostOperations tweetId={t.id} userId={user.id} />
+        <TweetOperations tweetId={t.id} userId={user.id} />
       </Button>
     </div>
   );

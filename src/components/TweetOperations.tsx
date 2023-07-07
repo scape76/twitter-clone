@@ -26,12 +26,12 @@ import { User } from "next-auth";
 import { deleteTweetAction } from "@/app/_actions/tweet";
 import { toast } from "./ui/use-toast";
 
-interface PostOperationsProps {
+interface TweetOperationsProps {
   tweetId: Tweet["id"];
   userId: User["id"];
 }
 
-const PostOperations: React.FC<PostOperationsProps> = ({ tweetId, userId }) => {
+const TweetOperations: React.FC<TweetOperationsProps> = ({ tweetId, userId }) => {
   const [isPending, startTransition] = React.useTransition();
 
   const [open, setOpen] = React.useState(false);
@@ -102,4 +102,4 @@ const PostOperations: React.FC<PostOperationsProps> = ({ tweetId, userId }) => {
   );
 };
 
-export default PostOperations;
+export default TweetOperations;

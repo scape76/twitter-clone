@@ -37,9 +37,29 @@ const NewTweetForm: React.FC<NewTweetFormProps> = ({
   user,
   setIsOpenedModal,
 }) => {
+  const submitButtonRef = React.useRef<HTMLButtonElement>(null);
+  const textAreaRef = React.useRef<HTMLTextAreaElement>(null);
+
   const [isPending, startTransition] = React.useTransition();
 
   const router = useRouter();
+
+  React.useEffect(() => {
+    const listener = (e: KeyboardEvent) => {
+      if (document.activeElement === textAreaRef.current) {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault;
+          onSubmit(form.getValues());
+        }
+      }
+    };
+
+    window.addEventListener("keydown", listener);
+
+    return () => {
+      window.removeEventListener("keydown", listener);
+    };
+  }, []);
 
   const form = useForm<Inputs>({
     resolver: zodResolver(tweetSchema),
@@ -60,7 +80,6 @@ const NewTweetForm: React.FC<NewTweetFormProps> = ({
         setIsOpenedModal ? setIsOpenedModal(false) : null;
 
         toast({ title: "Success", description: "Tweet posted succesfully." });
-
       } catch (e) {
         e instanceof Error
           ? toast({
@@ -96,6 +115,7 @@ const NewTweetForm: React.FC<NewTweetFormProps> = ({
                       placeholder="What is happening?!"
                       className="border-none text-lg font-semibold outline-none"
                       {...field}
+                      ref={textAreaRef}
                     />
                   </FormControl>
                 </FormItem>
@@ -105,7 +125,12 @@ const NewTweetForm: React.FC<NewTweetFormProps> = ({
               <Button type="button" size={"icon"} variant={"ghost"}>
                 <Icons.smile className="h-4 w-4 text-main" />
               </Button>
-              <Button type="submit" className="ml-auto" disabled={isPending}>
+              <Button
+                ref={submitButtonRef}
+                type="submit"
+                className="ml-auto"
+                disabled={isPending}
+              >
                 {isPending ? <Spinner className="mr-2 h-4 w-4" /> : null}
                 Tweet
               </Button>
