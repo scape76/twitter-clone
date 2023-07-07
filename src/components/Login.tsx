@@ -25,6 +25,7 @@ const Login: React.FC<LoginProps> = ({}) => {
       await signIn("google", {
         callbackUrl: "/",
       });
+      
     } catch (e) {
       console.log(e);
     } finally {

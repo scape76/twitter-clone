@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "@/styles/globals.css";
 import { getCurrentUser } from "@/lib/session";
 import { redirect } from "next/navigation";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,6 +18,7 @@ const Layout: React.FC<LayoutProps> = async ({ children, tweetModal }) => {
       <body className={inter.className}>
         {children}
         {tweetModal}
+        <Toaster />
       </body>
     </html>
   );

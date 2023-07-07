@@ -17,7 +17,7 @@ const MainNav: React.FC<MainNavProps> = async ({}) => {
   if (!user) return null;
 
   return (
-    <aside className="fixed top-0 z-30 -ml-2 hidden h-screen w-full shrink-0 overflow-y-auto border-r md:sticky md:block">
+    <aside className="fixed top-0 z-30 hidden h-screen w-full shrink-0 overflow-y-auto border-r md:sticky md:block">
       {/* <ScrollArea className="w-full"> */}
         <div className="flex h-full flex-col justify-between border-r border-border py-2 pr-4">
           <div className="flex flex-col gap-2">

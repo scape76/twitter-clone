@@ -6,6 +6,9 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
 import Link from "next/link";
 import { Icons } from "./Icons";
+import PostOperations from "./PostOperations";
+import { Button } from "./ui/Button";
+import { getCurrentUser } from "@/lib/session";
 
 dayjs.extend(relativeTime);
 
@@ -24,27 +27,41 @@ const Feed: React.FC = async ({}) => {
   );
 };
 
-function PostItem(t: Tweet & { author: User | null }) {
+async function PostItem(t: Tweet & { author: User | null }) {
+  const user = await getCurrentUser();
+
+  if (!user) return null;
+
   return (
-    <Link href={`/${t.authorId}/${t.id}`}>
-      <div className="flex gap-2 border-b border-border p-2 hover:bg-zinc-100">
-        <div>
-          <UserAvatar user={{ name: t.author?.name, image: t.author?.image }} />
-        </div>
-        <div className="w-full">
-          <div className="flex justify-between">
-            <div>
-              <span>{t.author?.name}</span>{" "}
-              <span className="font-thin">{` · ${dayjs(
-                t.created_at
-              ).fromNow()}`}</span>
-            </div>
-            <Icons.horizontalDots className="h-4 w-4" />
+    <div className="relative">
+      <Link href={`/${t.authorId}/${t.id}`}>
+        <div className="flex gap-2 border-b border-border p-2 hover:bg-zinc-100">
+          <div>
+            <UserAvatar
+              user={{ name: t.author?.name, image: t.author?.image }}
+            />
           </div>
-          <span className="max-w-full text-clip break-all">{t.text}</span>
+          <div className="w-full">
+            <div className="flex justify-between">
+              <div>
+                <span>{t.author?.name}</span>{" "}
+                <span className="font-thin">{` · ${dayjs(
+                  t.created_at
+                ).fromNow()}`}</span>
+              </div>
+            </div>
+            <span className="max-w-full text-clip break-all">{t.text}</span>
+          </div>
         </div>
-      </div>
-    </Link>
+      </Link>
+      <Button
+        size={"icon"}
+        variant={"ghost"}
+        className="absolute right-0 top-0"
+      >
+        <PostOperations tweetId={t.id} userId={user.id} />
+      </Button>
+    </div>
   );
 }
 
