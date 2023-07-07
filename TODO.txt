@@ -1,2 +1,1 @@
-- Filter the feed in asc order
 - Infinite scrolling

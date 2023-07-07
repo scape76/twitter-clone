@@ -73,7 +73,7 @@ const TweetOperations: React.FC<TweetOperationsProps> = ({ tweetId, userId }) =>
 
                     toast({
                       title: "Success",
-                      description: "Tweet posted succesfully.",
+                      description: "Your tweet was deleted.",
                     });
                   } catch (e) {
                     e instanceof Error

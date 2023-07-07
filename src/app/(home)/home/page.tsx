@@ -9,10 +9,10 @@ export default async function HomePage({}) {
   const user = await getCurrentUser();
 
   if (!user) return null;
-  
+
   return (
     <div>
-      <div className="sticky w-full border-b border-border bg-background/90 p-2 text-xl font-bold">
+      <div className="sticky top-0 z-50 w-full border-b border-border bg-background/90 p-2 text-xl font-bold">
         Home
       </div>
       <NewTweetForm user={user} />

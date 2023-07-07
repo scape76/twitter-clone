@@ -37,29 +37,9 @@ const NewTweetForm: React.FC<NewTweetFormProps> = ({
   user,
   setIsOpenedModal,
 }) => {
-  const submitButtonRef = React.useRef<HTMLButtonElement>(null);
-  const textAreaRef = React.useRef<HTMLTextAreaElement>(null);
-
   const [isPending, startTransition] = React.useTransition();
 
   const router = useRouter();
-
-  React.useEffect(() => {
-    const listener = (e: KeyboardEvent) => {
-      if (document.activeElement === textAreaRef.current) {
-        if (e.key === "Enter" && !e.shiftKey) {
-          e.preventDefault;
-          onSubmit(form.getValues());
-        }
-      }
-    };
-
-    window.addEventListener("keydown", listener);
-
-    return () => {
-      window.removeEventListener("keydown", listener);
-    };
-  }, []);
 
   const form = useForm<Inputs>({
     resolver: zodResolver(tweetSchema),
@@ -115,7 +95,12 @@ const NewTweetForm: React.FC<NewTweetFormProps> = ({
                       placeholder="What is happening?!"
                       className="border-none text-lg font-semibold outline-none"
                       {...field}
-                      ref={textAreaRef}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                          e.preventDefault;
+                          onSubmit(form.getValues());
+                        }
+                      }}
                     />
                   </FormControl>
                 </FormItem>
@@ -126,7 +111,6 @@ const NewTweetForm: React.FC<NewTweetFormProps> = ({
                 <Icons.smile className="h-4 w-4 text-main" />
               </Button>
               <Button
-                ref={submitButtonRef}
                 type="submit"
                 className="ml-auto"
                 disabled={isPending}
