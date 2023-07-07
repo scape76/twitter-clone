@@ -27,7 +27,7 @@ const Feed: React.FC = async ({}) => {
 function PostItem(t: Tweet & { author: User | null }) {
   return (
     <Link href={`/${t.authorId}/${t.id}`}>
-      <div className="flex gap-2 p-2 border-b border-border hover:bg-zinc-100">
+      <div className="flex gap-2 border-b border-border p-2 hover:bg-zinc-100">
         <div>
           <UserAvatar user={{ name: t.author?.name, image: t.author?.image }} />
         </div>
@@ -41,7 +41,7 @@ function PostItem(t: Tweet & { author: User | null }) {
             </div>
             <Icons.horizontalDots className="h-4 w-4" />
           </div>
-          {t.text}
+          <span className="max-w-full text-clip break-all">{t.text}</span>
         </div>
       </div>
     </Link>

@@ -23,15 +23,23 @@ import {
 } from "@/components/ui/form";
 import { toast } from "../ui/use-toast";
 import { postTweetAction } from "@/app/_actions/tweet";
+import { Router } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 type Inputs = z.infer<typeof tweetSchema>;
 
 interface NewTweetFormProps {
   user: User;
+  setIsOpenedModal?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const NewTweetForm: React.FC<NewTweetFormProps> = ({ user }) => {
+const NewTweetForm: React.FC<NewTweetFormProps> = ({
+  user,
+  setIsOpenedModal,
+}) => {
   const [isPending, startTransition] = React.useTransition();
+
+  const router = useRouter();
 
   const form = useForm<Inputs>({
     resolver: zodResolver(tweetSchema),
@@ -49,7 +57,10 @@ const NewTweetForm: React.FC<NewTweetFormProps> = ({ user }) => {
 
         form.reset();
 
+        setIsOpenedModal ? setIsOpenedModal(false) : null;
+
         toast({ title: "Success", description: "Tweet posted succesfully." });
+
       } catch (e) {
         e instanceof Error
           ? toast({
