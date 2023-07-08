@@ -4,6 +4,7 @@ import * as React from "react";
 import Feed from "@/components/Feed";
 import NewTweetForm from "@/components/forms/NewTweetForm";
 import { Suspense } from "react";
+import { Spinner } from "@/components/Icons";
 
 export default async function HomePage({}) {
   const user = await getCurrentUser();
@@ -16,7 +17,7 @@ export default async function HomePage({}) {
         Home
       </div>
       <NewTweetForm user={user} />
-      <Feed user={user} />
+        <Feed user={user} />
     </div>
   );
 }

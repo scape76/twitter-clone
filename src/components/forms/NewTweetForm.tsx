@@ -61,7 +61,9 @@ const NewTweetForm: React.FC<NewTweetFormProps> = ({
 
         toast({ title: "Success", description: "Tweet posted succesfully." });
 
-        router.refresh();
+
+        // Workaround to refresh the post data   
+        location.reload();
       } catch (e) {
         e instanceof Error
           ? toast({
@@ -86,10 +88,7 @@ const NewTweetForm: React.FC<NewTweetFormProps> = ({
       </div>
       <div className="w-full">
         <Form {...form}>
-          <form
-            onSubmit={void form.handleSubmit(onSubmit)}
-            className="space-y-4"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
               name="text"

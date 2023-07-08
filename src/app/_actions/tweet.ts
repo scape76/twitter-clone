@@ -18,8 +18,6 @@ export async function postTweetAction(input: {
     text: input.text,
     authorId: input.userId,
   });
-
-  revalidatePath("/home");
 }
 
 export async function deleteTweetAction(input: {
@@ -47,8 +45,6 @@ export async function deleteTweetAction(input: {
   if (!isAuthor) {
     throw new Error("You have no permissions to delete this post.");
   }
-
-  revalidatePath("/home");
 }
 
 const numberOfTweets = 10;

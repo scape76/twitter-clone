@@ -6,12 +6,12 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useIntersection } from "@/hooks/use-intersection";
 import { getTweetsByPage } from "@/app/_actions/tweet";
 import UserAvatar from "./UserAvatar";
-import type { User } from "next-auth";
 import Link from "next/link";
 // import TweetOperations from "./TweetOperations";
 import { Button } from "./ui/Button";
 import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
+import { User } from "next-auth";
 
 dayjs.extend(relativeTime);
 
@@ -22,14 +22,10 @@ interface FeedProps {
 const Feed = ({ user }: FeedProps) => {
   // TODO: infinite scrolling
 
-  // const _tweets = await db.query.tweets.findMany({
-  //   with: { author: true },
-  //   orderBy: [desc(tweets.created_at)],
-  // });
   const { data, fetchNextPage, isFetching, hasNextPage } = useInfiniteQuery(
     ["query"],
     async ({ pageParam = 1 }) => {
-      // eslint-disable-next-line 
+      // eslint-disable-next-line
       const data = await getTweetsByPage({ page: pageParam });
       return data;
     },
