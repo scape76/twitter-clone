@@ -31,10 +31,12 @@ interface TweetOperationsProps {
   userId: User["id"];
 }
 
-const TweetOperations: React.FC<TweetOperationsProps> = ({ tweetId, userId }) => {
-  const [isPending, startTransition] = React.useTransition();
-
+const TweetOperations: React.FC<TweetOperationsProps> = ({
+  tweetId,
+  userId,
+}) => {
   const [open, setOpen] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
   return (
     <>
       <DropdownMenu>
@@ -63,36 +65,37 @@ const TweetOperations: React.FC<TweetOperationsProps> = ({ tweetId, userId }) =>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              disabled={isPending}
-              onClick={() => {
-                startTransition(async () => {
-                  try {
-                    await deleteTweetAction({ id: tweetId, userId });
+              disabled={isLoading}
+              // eslint-disable-next-line 
+              onClick={async  () =>  {
+                try {
+                  setIsLoading(true);
+                  await deleteTweetAction({ id: tweetId, userId });
 
-                    setOpen(false);
+                  setOpen(false);
 
-                    toast({
-                      title: "Success",
-                      description: "Your tweet was deleted.",
-                    });
-                  } catch (e) {
-                    e instanceof Error
-                      ? toast({
-                          title: "Error",
-                          description: e.message,
-                          variant: "destructive",
-                        })
-                      : toast({
-                          title: "Error",
-                          description:
-                            "Something went wrong, please try again.",
-                          variant: "destructive",
-                        });
-                  }
-                });
+                  toast({
+                    title: "Success",
+                    description: "Your tweet was deleted.",
+                  });
+                } catch (e) {
+                  e instanceof Error
+                    ? toast({
+                        title: "Error",
+                        description: e.message,
+                        variant: "destructive",
+                      })
+                    : toast({
+                        title: "Error",
+                        description: "Something went wrong, please try again.",
+                        variant: "destructive",
+                      });
+                } finally {
+                  setIsLoading(false);
+                }
               }}
             >
-              {isPending ? <Spinner /> : null}
+              {isLoading ? <Spinner /> : null}
               Continue
             </AlertDialogAction>
           </AlertDialogFooter>

@@ -9,9 +9,8 @@ import Link from "next/link";
 import { getCurrentUser } from "@/lib/session";
 import TweetButton from "@/components/TweetButton";
 
-interface MainNavProps {}
 
-const MainNav: React.FC<MainNavProps> = async ({}) => {
+const MainNav: React.FC = async ({}) => {
   const user = await getCurrentUser();
 
   if (!user) return null;

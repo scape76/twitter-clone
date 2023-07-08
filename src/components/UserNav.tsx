@@ -49,7 +49,7 @@ const UserNav: React.FC<UserNavProps> = ({ user }) => {
         <DropdownMenuItem>
           <Button
             variant={"ghost"}
-            onClick={() => signOut()}
+            onClick={() => void signOut()}
             className="w-full text-ellipsis"
           >
             Sign out {user.email}

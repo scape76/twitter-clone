@@ -4,7 +4,7 @@ import { type User } from "next-auth";
 import { db } from "@/db";
 import { Tweet, tweets } from "@/db/schema";
 import { revalidatePath } from "next/cache";
-import { and, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 
 export async function postTweetAction(input: {
   text: string;
@@ -49,4 +49,28 @@ export async function deleteTweetAction(input: {
   }
 
   revalidatePath("/home");
+}
+
+const numberOfTweets = 10;
+
+export async function getTweetsByPage(input: { page?: number }) {
+  if (typeof input.page !== "number") {
+    throw new Error("Invalid input.");
+  }
+
+  const offset = (input.page - 1) * numberOfTweets;
+
+  const _tweets = await db.query.tweets.findMany({
+    limit: numberOfTweets + 1,
+    offset,
+    orderBy: desc(tweets.created_at),
+    with: {
+      author: true,
+    },
+  });
+
+  return {
+    tweets: _tweets.slice(0, numberOfTweets),
+    nextPage: _tweets.length === numberOfTweets + 1 ? input.page + 1 : null,
+  };
 }

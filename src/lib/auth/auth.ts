@@ -7,6 +7,7 @@ import type { NextAuthOptions } from "next-auth";
 import { env } from "@/env.mjs";
 
 export const authOptions: NextAuthOptions = {
+  // eslint-disable-next-line
   adapter: DrizzleAdapter(db as any),
   session: {
     strategy: "jwt",
@@ -22,7 +23,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async session({ token, session }) {
+    session({ token, session }) {
       if (token) {
         session.user.id = token.id;
         session.user.name = token.name;

@@ -60,6 +60,8 @@ const NewTweetForm: React.FC<NewTweetFormProps> = ({
         setIsOpenedModal ? setIsOpenedModal(false) : null;
 
         toast({ title: "Success", description: "Tweet posted succesfully." });
+
+        router.refresh();
       } catch (e) {
         e instanceof Error
           ? toast({
@@ -84,7 +86,10 @@ const NewTweetForm: React.FC<NewTweetFormProps> = ({
       </div>
       <div className="w-full">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            onSubmit={void form.handleSubmit(onSubmit)}
+            className="space-y-4"
+          >
             <FormField
               control={form.control}
               name="text"
@@ -97,6 +102,9 @@ const NewTweetForm: React.FC<NewTweetFormProps> = ({
                       {...field}
                       onKeyDown={(e) => {
                         if (e.key === "Enter" && !e.shiftKey) {
+                          {
+                            /* eslint-disable-next-line */
+                          }
                           e.preventDefault;
                           onSubmit(form.getValues());
                         }
@@ -110,11 +118,7 @@ const NewTweetForm: React.FC<NewTweetFormProps> = ({
               <Button type="button" size={"icon"} variant={"ghost"}>
                 <Icons.smile className="h-4 w-4 text-main" />
               </Button>
-              <Button
-                type="submit"
-                className="ml-auto"
-                disabled={isPending}
-              >
+              <Button type="submit" className="ml-auto" disabled={isPending}>
                 {isPending ? <Spinner className="mr-2 h-4 w-4" /> : null}
                 Tweet
               </Button>

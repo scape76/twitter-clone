@@ -1,10 +1,8 @@
-import { redirect } from 'next/navigation';
-import * as React from 'react'
+import { redirect } from "next/navigation";
+import * as React from "react";
 
-interface pageProps {}
-
-const page: React.FC<pageProps> = ({}) => {
-  redirect('/home');  
-}
+const page = ({}) => {
+  redirect("/home");
+};
 
 export default page;

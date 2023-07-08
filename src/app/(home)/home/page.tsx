@@ -16,7 +16,7 @@ export default async function HomePage({}) {
         Home
       </div>
       <NewTweetForm user={user} />
-      <Feed />
+      <Feed user={user} />
     </div>
   );
 }

@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
-import * as React from "react";
 
-export default async function IndexPage() {
+export default function IndexPage() {
   redirect("/home");
 }

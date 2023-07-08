@@ -5,7 +5,7 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-export default async function Laoyut({ children }: LayoutProps) {
+export default function Laoyut({ children }: LayoutProps) {
   return (
     <div className="container max-w-[1200px]">
       <div className="grid grid-cols-[280px_1fr]">

@@ -14,9 +14,8 @@ import {
 } from "@/components/ui/Card";
 import { Icons, Spinner } from "./Icons";
 
-interface LoginProps {}
 
-const Login: React.FC<LoginProps> = ({}) => {
+const Login: React.FC = ({}) => {
   const [isLoading, setIsLoading] = React.useState(false);
 
   async function signInWithGoogle() {
@@ -45,7 +44,7 @@ const Login: React.FC<LoginProps> = ({}) => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Button variant={"outline"} onClick={() => signInWithGoogle()}>
+          <Button variant={"outline"} onClick={() => void signInWithGoogle()}>
             {isLoading ? (
               <Spinner className="mr-2" />
             ) : (
