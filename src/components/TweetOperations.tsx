@@ -18,12 +18,13 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-import { Icons, Spinner } from "./Icons";
+import { Icons, Spinner } from "@/components/Icons";
 import { type Tweet } from "@/db/schema";
 import { type User } from "next-auth";
 import { deleteTweetAction } from "@/app/_actions/tweet";
-import { toast } from "./ui/use-toast";
-import { buttonVariants } from "./ui/Button";
+import { toast } from "@/components/ui/use-toast";
+import { buttonVariants } from "@/components/ui/Button";
+import { TweetContext } from "@/components/TweetContextProvider";
 
 interface TweetOperationsProps {
   tweetId: Tweet["id"];
@@ -34,6 +35,8 @@ const TweetOperations: React.FC<TweetOperationsProps> = ({
   tweetId,
   userId,
 }) => {
+  const context = React.useContext(TweetContext);
+
   const [open, setOpen] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   return (
@@ -83,6 +86,8 @@ const TweetOperations: React.FC<TweetOperationsProps> = ({
                     title: "Success",
                     description: "Your tweet was deleted.",
                   });
+
+                  context?.setRefetch(true);
                 } catch (e) {
                   e instanceof Error
                     ? toast({
