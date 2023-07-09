@@ -1,7 +1,6 @@
-import { db } from "@/db";
 import { getCurrentUser } from "@/lib/session";
 import * as React from "react";
-import TweetContextProvider from "@/components/TweetContext";
+import TweetContextProvider from "@/components/TweetContextProvider";
 import NewTweetForm from "@/components/forms/NewTweetForm";
 import Feed from "@/components/Feed";
 

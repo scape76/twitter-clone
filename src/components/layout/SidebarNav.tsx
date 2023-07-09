@@ -1,4 +1,4 @@
-import { MainNavItem } from "@/types";
+import { type MainNavItem } from "@/types";
 import Link from "next/link";
 import * as React from "react";
 import { buttonVariants } from "../ui/Button";

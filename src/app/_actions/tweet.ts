@@ -2,9 +2,8 @@
 
 import { type User } from "next-auth";
 import { db } from "@/db";
-import { Tweet, tweets } from "@/db/schema";
-import { revalidatePath } from "next/cache";
-import { and, desc, eq, gt, lt, sql } from "drizzle-orm";
+import { type Tweet, tweets } from "@/db/schema";
+import { and, desc, eq, lt, } from "drizzle-orm";
 
 export async function postTweetAction(input: {
   text: string;
@@ -31,7 +30,7 @@ export async function deleteTweetAction(input: {
     throw new Error("Invalid input.");
   }
 
-  const isAuthor = await db.transaction(async (tx) => {
+  const isAuthor = await db.transaction(async (_tx) => {
     const founded = await db.query.tweets.findFirst({
       where: and(eq(tweets.id, input.id), eq(tweets.authorId, input.userId)),
     });
@@ -75,7 +74,6 @@ export async function getTweetsByCursor(input: { cursor?: number }) {
     where: lt(tweets.id, input.cursor),
     orderBy: desc(tweets.created_at),
     limit: numberOfTweets,
-    offset: 1,
     with: {
       author: true,
     },

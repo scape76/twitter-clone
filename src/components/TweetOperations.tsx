@@ -16,15 +16,14 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
 import { Icons, Spinner } from "./Icons";
-import { Button } from "./ui/Button";
-import { Tweet } from "@/db/schema";
-import { User } from "next-auth";
+import { type Tweet } from "@/db/schema";
+import { type User } from "next-auth";
 import { deleteTweetAction } from "@/app/_actions/tweet";
 import { toast } from "./ui/use-toast";
+import { buttonVariants } from "./ui/Button";
 
 interface TweetOperationsProps {
   tweetId: Tweet["id"];
@@ -40,7 +39,13 @@ const TweetOperations: React.FC<TweetOperationsProps> = ({
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger
+          className={buttonVariants({
+            size: "icon",
+            variant: "ghost",
+            className: "absolute right-0 top-0",
+          })}
+        >
           <Icons.horizontalDots className="h-4 w-4" />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
@@ -66,8 +71,8 @@ const TweetOperations: React.FC<TweetOperationsProps> = ({
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               disabled={isLoading}
-              // eslint-disable-next-line 
-              onClick={async  () =>  {
+              // eslint-disable-next-line
+              onClick={async () => {
                 try {
                   setIsLoading(true);
                   await deleteTweetAction({ id: tweetId, userId });

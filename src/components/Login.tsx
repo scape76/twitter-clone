@@ -12,7 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
-import { Icons, Spinner } from "./Icons";
+import { Spinner } from "./Icons";
 
 
 const Login: React.FC = ({}) => {

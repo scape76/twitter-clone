@@ -1,4 +1,4 @@
-import { User } from "next-auth";
+import { type User } from "next-auth";
 import * as React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 

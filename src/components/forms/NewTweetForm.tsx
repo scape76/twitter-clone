@@ -2,12 +2,12 @@
 
 import * as React from "react";
 
-import { User } from "next-auth";
+import { type User } from "next-auth";
 import UserAvatar from "@/components/UserAvatar";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "../ui/Button";
 import { Icons, Spinner } from "../Icons";
-import * as z from "zod";
+import type * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { tweetSchema } from "@/lib/validations/tweet";
@@ -15,15 +15,12 @@ import { tweetSchema } from "@/lib/validations/tweet";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
 import { toast } from "../ui/use-toast";
 import { postTweetAction } from "@/app/_actions/tweet";
-import { TweetContext } from "@/components/TweetContext";
+import { TweetContext } from "@/components/TweetContextProvider";
 
 type Inputs = z.infer<typeof tweetSchema>;
 
@@ -102,7 +99,7 @@ const NewTweetForm: React.FC<NewTweetFormProps> = ({
                           {
                             /* eslint-disable-next-line */
                           }
-                          e.preventDefault;
+                          void e.preventDefault;
                           onSubmit(form.getValues());
                         }
                       }}

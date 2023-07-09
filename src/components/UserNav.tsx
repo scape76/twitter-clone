@@ -6,19 +6,11 @@ import { Button } from "@/components/ui/Button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/DropdownMenu";
 
-import { User } from "next-auth";
+import { type User } from "next-auth";
 import { Icons } from "./Icons";
 import { signOut } from "next-auth/react";
 import UserAvatar from "./UserAvatar";

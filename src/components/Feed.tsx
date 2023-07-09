@@ -12,7 +12,10 @@ import { Button } from "./ui/Button";
 import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
 import { User } from "next-auth";
-import { TweetContext } from "@/components/TweetContext";
+import { TweetContext } from "@/components/TweetContextProvider";
+import { Spinner } from "./Icons";
+import TweetOperations from "./TweetOperations";
+import TweetItem from "./TweetItem";
 
 dayjs.extend(relativeTime);
 
@@ -23,16 +26,15 @@ interface FeedProps {
 const Feed = ({ user }: FeedProps) => {
   const context = React.useContext(TweetContext);
 
-  const { data, fetchNextPage, isFetching, hasNextPage, refetch } =
+  const { data, fetchNextPage, isLoading, hasNextPage, refetch } =
     useInfiniteQuery(
       ["query"],
       async ({ pageParam: cursor = undefined }) => {
-        // eslint-disable-next-line
         const data = await getTweetsByCursor({ cursor });
         return data;
       },
       {
-        getNextPageParam: (lastPage, pages) => {
+        getNextPageParam: (lastPage) => {
           return lastPage.nextCursor;
         },
       }
@@ -51,98 +53,27 @@ const Feed = ({ user }: FeedProps) => {
   });
 
   React.useEffect(() => {
-    console.log("here");
-
     if (entry?.isIntersecting && hasNextPage) void fetchNextPage();
-  }, [entry]);
+  }, [entry, hasNextPage, fetchNextPage]);
 
   const pageInfo = data?.pages.flatMap((p) => p);
+
+  if (isLoading) {
+    return <Spinner className="mx-auto mt-10 h-24 w-24 text-gray-400" />;
+  }
 
   return (
     <div>
       {pageInfo?.map(({ tweets, nextCursor }) =>
-        tweets.map((tweet, idx) => {
+        tweets.map((tweet) => {
           if (tweet.id === nextCursor) {
             return (
-              // eslint-disable-next-line
               <div ref={ref} key={tweet.id}>
-                <div className="relative">
-                  {/* eslint-disable-next-line */}
-                  <Link href={`/${tweet.authorId}/${tweet.id}`}>
-                    <div className="flex gap-2 border-b border-border p-2 hover:bg-zinc-100">
-                      <div>
-                        <UserAvatar
-                          user={{
-                            name: tweet.author?.name,
-                            image: tweet.author?.image,
-                          }}
-                        />
-                      </div>
-                      <div className="w-full">
-                        <div className="flex justify-between">
-                          <div>
-                            <span>{tweet.author?.name}</span>{" "}
-                            <span className="font-thin">{` · ${dayjs(
-                              tweet.created_at
-                            ).fromNow()}`}</span>
-                          </div>
-                        </div>
-                        <span className="max-w-full text-clip break-all">
-                          {tweet.text}
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                  <Button
-                    size={"icon"}
-                    variant={"ghost"}
-                    className="absolute right-0 top-0"
-                  >
-                    {/* TODO: weird bug with react server bundler */}
-                    {/* <TweetOperations tweetId={t.id} userId={user.id} /> */}
-                  </Button>
-                </div>
+                <TweetItem tweet={tweet} user={user} />
               </div>
             );
           }
-          return (
-            <div className="relative" key={tweet.id}>
-              {/* eslint-disable-next-line */}
-              <Link href={`/${tweet.authorId}/${tweet.id}`}>
-                <div className="flex gap-2 border-b border-border p-2 hover:bg-zinc-100">
-                  <div>
-                    <UserAvatar
-                      user={{
-                        name: tweet.author?.name,
-                        image: tweet.author?.image,
-                      }}
-                    />
-                  </div>
-                  <div className="w-full">
-                    <div className="flex justify-between">
-                      <div>
-                        <span>{tweet.author?.name}</span>{" "}
-                        <span className="font-thin">{` · ${dayjs(
-                          tweet.created_at
-                        ).fromNow()}`}</span>
-                      </div>
-                    </div>
-                    <span className="max-w-full text-clip break-all">
-                      {tweet.text}
-                    </span>
-                  </div>
-                </div>
-              </Link>
-              <Button
-                size={"icon"}
-                variant={"ghost"}
-                className="absolute right-0 top-0"
-              >
-                {/* TODO: weird bug with react server bundler */}
-                {/* <TweetOperations tweetId={t.id} userId={user.id} /> */}
-              </Button>
-            </div>
-          );
+          return <TweetItem tweet={tweet} user={user} />;
         })
       )}
     </div>
