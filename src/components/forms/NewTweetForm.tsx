@@ -23,8 +23,7 @@ import {
 } from "@/components/ui/form";
 import { toast } from "../ui/use-toast";
 import { postTweetAction } from "@/app/_actions/tweet";
-import { Router } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { TweetContext } from "@/components/TweetContext";
 
 type Inputs = z.infer<typeof tweetSchema>;
 
@@ -37,9 +36,9 @@ const NewTweetForm: React.FC<NewTweetFormProps> = ({
   user,
   setIsOpenedModal,
 }) => {
-  const [isPending, startTransition] = React.useTransition();
+  const context = React.useContext(TweetContext);
 
-  const router = useRouter();
+  const [isPending, startTransition] = React.useTransition();
 
   const form = useForm<Inputs>({
     resolver: zodResolver(tweetSchema),
@@ -61,9 +60,8 @@ const NewTweetForm: React.FC<NewTweetFormProps> = ({
 
         toast({ title: "Success", description: "Tweet posted succesfully." });
 
-
-        // Workaround to refresh the post data   
-        location.reload();
+        // TODO: trigger refetch
+        context?.setRefetch(true);
       } catch (e) {
         e instanceof Error
           ? toast({

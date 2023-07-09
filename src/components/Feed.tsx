@@ -4,7 +4,7 @@ import * as React from "react";
 
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useIntersection } from "@/hooks/use-intersection";
-import { getTweetsByPage } from "@/app/_actions/tweet";
+import { getTweetsByCursor } from "@/app/_actions/tweet";
 import UserAvatar from "./UserAvatar";
 import Link from "next/link";
 // import TweetOperations from "./TweetOperations";
@@ -12,6 +12,7 @@ import { Button } from "./ui/Button";
 import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
 import { User } from "next-auth";
+import { TweetContext } from "@/components/TweetContext";
 
 dayjs.extend(relativeTime);
 
@@ -20,21 +21,27 @@ interface FeedProps {
 }
 
 const Feed = ({ user }: FeedProps) => {
-  // TODO: infinite scrolling
+  const context = React.useContext(TweetContext);
 
-  const { data, fetchNextPage, isFetching, hasNextPage } = useInfiniteQuery(
-    ["query"],
-    async ({ pageParam = 1 }) => {
-      // eslint-disable-next-line
-      const data = await getTweetsByPage({ page: pageParam });
-      return data;
-    },
-    {
-      getNextPageParam: (lastPage, pages) => {
-        return lastPage.nextPage;
+  const { data, fetchNextPage, isFetching, hasNextPage, refetch } =
+    useInfiniteQuery(
+      ["query"],
+      async ({ pageParam: cursor = undefined }) => {
+        // eslint-disable-next-line
+        const data = await getTweetsByCursor({ cursor });
+        return data;
       },
-    }
-  );
+      {
+        getNextPageParam: (lastPage, pages) => {
+          return lastPage.nextCursor;
+        },
+      }
+    );
+
+  if (context?.refetch) {
+    refetch();
+    context.setRefetch(false);
+  }
 
   const cursorRef = React.useRef<HTMLDivElement>(null);
 
@@ -53,9 +60,9 @@ const Feed = ({ user }: FeedProps) => {
 
   return (
     <div>
-      {pageInfo?.map(({ tweets, nextPage }) =>
+      {pageInfo?.map(({ tweets, nextCursor }) =>
         tweets.map((tweet, idx) => {
-          if (tweets.length - 1 === idx) {
+          if (tweet.id === nextCursor) {
             return (
               // eslint-disable-next-line
               <div ref={ref} key={tweet.id}>

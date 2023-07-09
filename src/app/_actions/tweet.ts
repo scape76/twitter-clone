@@ -4,7 +4,7 @@ import { type User } from "next-auth";
 import { db } from "@/db";
 import { Tweet, tweets } from "@/db/schema";
 import { revalidatePath } from "next/cache";
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, gt, lt, sql } from "drizzle-orm";
 
 export async function postTweetAction(input: {
   text: string;
@@ -47,26 +47,60 @@ export async function deleteTweetAction(input: {
   }
 }
 
-const numberOfTweets = 10;
+const numberOfTweets = 5;
 
-export async function getTweetsByPage(input: { page?: number }) {
-  if (typeof input.page !== "number") {
+export async function getTweetsByCursor(input: { cursor?: number }) {
+  
+  if (!input.cursor) {
+    const _tweets = await db.query.tweets.findMany({
+      limit: numberOfTweets,
+      orderBy: desc(tweets.created_at),
+      with: {
+        author: true,
+      },
+    });
+
+    const nextCursor = _tweets[numberOfTweets - 1]?.id;
+    
+    return {
+      tweets: _tweets,
+      nextCursor,
+    };
+  }
+  
+  if (typeof input.cursor !== "number") {
     throw new Error("Invalid input.");
   }
-
-  const offset = (input.page - 1) * numberOfTweets;
-
   const _tweets = await db.query.tweets.findMany({
-    limit: numberOfTweets + 1,
-    offset,
+    where: lt(tweets.id, input.cursor),
     orderBy: desc(tweets.created_at),
+    limit: numberOfTweets,
+    offset: 1,
     with: {
       author: true,
     },
   });
 
+  const nextCursor = _tweets[numberOfTweets - 1]?.id;
+
   return {
-    tweets: _tweets.slice(0, numberOfTweets),
-    nextPage: _tweets.length === numberOfTweets + 1 ? input.page + 1 : null,
+    tweets: _tweets,
+    nextCursor,
   };
+
+  // offset based
+
+  // const _tweets = await db.query.tweets.findMany({
+  //   limit: numberOfTweets + 1,
+  //   offset,
+  //   orderBy: desc(tweets.created_at),
+  //   with: {
+  //     author: true,
+  //   },
+  // });
+
+  // return {
+  //   tweets: _tweets.slice(0, numberOfTweets),
+  //   nextPage: _tweets.length === numberOfTweets + 1 ? input.page + 1 : null,
+  // };
 }
