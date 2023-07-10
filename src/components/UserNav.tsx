@@ -13,7 +13,8 @@ import {
 import { type User } from "next-auth";
 import { Icons } from "./Icons";
 import { signOut } from "next-auth/react";
-import UserAvatar from "./UserAvatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { getUserLiterals } from "@/lib/utils";
 
 interface UserNavProps {
   user: User;
@@ -28,7 +29,10 @@ const UserNav: React.FC<UserNavProps> = ({ user }) => {
           className="flex h-auto items-center justify-between gap-2"
         >
           <div className="flex items-center gap-2">
-            <UserAvatar user={{ name: user.name, image: user.image }} />
+            <Avatar>
+              <AvatarImage src={user.image ?? undefined}/>
+              <AvatarFallback>{getUserLiterals(user.name)}</AvatarFallback>
+            </Avatar>
             <div className="flex flex-col items-start gap-2 text-ellipsis text-xs">
               <span className="font-bold">{user.name}</span>
               <span className="text-muted-foreground">{user.email}</span>

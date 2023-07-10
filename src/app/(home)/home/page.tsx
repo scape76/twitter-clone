@@ -3,6 +3,7 @@ import * as React from "react";
 import TweetContextProvider from "@/components/TweetContextProvider";
 import NewTweetForm from "@/components/forms/NewTweetForm";
 import Feed from "@/components/Feed";
+import Header from "@/components/layout/Header";
 
 export default async function HomePage({}) {
   const user = await getCurrentUser();
@@ -11,9 +12,7 @@ export default async function HomePage({}) {
 
   return (
     <div>
-      <div className="sticky top-0 z-50 w-full border-b border-border bg-background/90 p-2 text-xl font-bold">
-        Home
-      </div>
+      <Header title={'Home'}/>
       <TweetContextProvider>
         <NewTweetForm user={user} />
         <Feed user={user} />
