@@ -25,6 +25,7 @@ import {
   type LucideProps,
   MoreHorizontal,
   Smile,
+  Heart,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -77,4 +78,5 @@ export const Icons = {
   ),
   home: Home,
   smile: Smile,
+  like: Heart,
 };

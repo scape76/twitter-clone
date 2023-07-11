@@ -75,6 +75,7 @@ export type User = InferModel<typeof users>;
 
 export const usersRelations = relations(users, ({ many }) => ({
   tweets: many(tweets),
+  likes: many(likes),
 }));
 
 export const verificationTokens = mysqlTable(
@@ -102,10 +103,30 @@ export const tweets = mysqlTable("tweets", {
 
 export type Tweet = InferModel<typeof tweets>;
 
-export const tweetsRelations = relations(tweets, ({ one }) => ({
+export const tweetsRelations = relations(tweets, ({ one, many }) => ({
   author: one(users, {
     fields: [tweets.authorId],
     references: [users.id],
+  }),
+  likes: many(likes),
+}));
+
+export const likes = mysqlTable("likes", {
+  id: serial("id").primaryKey(),
+  tweetId: int("tweet_id").notNull(),
+  authorId: varchar("author_id", { length: 255 }).notNull(),
+});
+
+export type Like = InferModel<typeof likes>;
+
+export const likesRelations = relations(likes, ({ one }) => ({
+  author: one(users, {
+    fields: [likes.authorId],
+    references: [users.id],
+  }),
+  tweet: one(tweets, {
+    fields: [likes.tweetId],
+    references: [tweets.id],
   }),
 }));
 
