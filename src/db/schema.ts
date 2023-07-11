@@ -97,7 +97,7 @@ export const tweets = mysqlTable("tweets", {
   id: serial("id").primaryKey(),
   text: text("text"),
   created_at: timestamp("created_at").notNull().defaultNow(),
-  authorId: varchar("author_id", { length: 255 }),
+  authorId: varchar("author_id", { length: 255 }).notNull(),
 });
 
 export type Tweet = InferModel<typeof tweets>;
@@ -106,5 +106,26 @@ export const tweetsRelations = relations(tweets, ({ one }) => ({
   author: one(users, {
     fields: [tweets.authorId],
     references: [users.id],
+  }),
+}));
+
+export const comments = mysqlTable("comments", {
+  id: serial("id").primaryKey(),
+  text: text("text"),
+  created_at: timestamp("created_at").notNull().defaultNow(),
+  tweetId: int("tweet_id").notNull(),
+  authorId: varchar("author_id", { length: 255 }).notNull(),
+});
+
+export type Comment = InferModel<typeof comments>;
+
+export const commentsRelations = relations(comments, ({ one }) => ({
+  author: one(users, {
+    fields: [comments.authorId],
+    references: [users.id],
+  }),
+  tweet: one(tweets, {
+    fields: [comments.tweetId],
+    references: [tweets.id],
   }),
 }));
