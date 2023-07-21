@@ -99,6 +99,7 @@ export const tweets = mysqlTable("tweets", {
   text: text("text"),
   created_at: timestamp("created_at").notNull().defaultNow(),
   authorId: varchar("author_id", { length: 255 }).notNull(),
+  replyToTweetId: int("reply_to_post_id"),
 });
 
 export type Tweet = InferModel<typeof tweets>;
@@ -107,6 +108,10 @@ export const tweetsRelations = relations(tweets, ({ one, many }) => ({
   author: one(users, {
     fields: [tweets.authorId],
     references: [users.id],
+  }),
+  replyToTweet: one(tweets, {
+    fields: [tweets.replyToTweetId],
+    references: [tweets.id],
   }),
   likes: many(likes),
 }));
