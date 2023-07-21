@@ -9,7 +9,6 @@ import dayjs from "dayjs";
 import TweetOperations from "./TweetOperations";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { cn, getUserLiterals } from "@/lib/utils";
-import { Button } from "./ui/Button";
 import { Icons } from "./Icons";
 import { toggleTweetLike } from "@/app/_actions/tweet";
 import { TweetContext } from "./TweetContextProvider";
@@ -17,7 +16,7 @@ import { TweetContext } from "./TweetContextProvider";
 dayjs.extend(relativeTime);
 
 interface TweetItemProps {
-  tweet: Tweet & { author: User | null } & { likes: Like[] };
+  tweet: Tweet & { author: User } & { likes: Like[] } & { replyCount: string };
   user: User;
 }
 
@@ -50,17 +49,7 @@ function TweetItem({ tweet, user }: TweetItemProps) {
               </div>
             </div>
             <span className="max-w-full text-clip break-all">{tweet.text}</span>
-            <div
-              className="group flex justify-between rounded-full p-1 group-hover:bg-main"
-              onClick={(e) => {
-                if (isPending) return;
-                startTransition(async () => {
-                  e.preventDefault();
-                  await toggleTweetLike({ id: tweet.id, userId: user.id });
-                  context?.setRefetch(true);
-                });
-              }}
-            >
+            <div className="group flex gap-4 mt-2">
               <div className="flex gap-2">
                 <Icons.like
                   className={cn("h-4 w-4 hover:text-red-500", {
@@ -68,8 +57,24 @@ function TweetItem({ tweet, user }: TweetItemProps) {
                       (like) => like.authorId === user.id
                     ),
                   })}
+                  onClick={(e) => {
+                    if (isPending) return;
+                    startTransition(async () => {
+                      e.preventDefault();
+                      await toggleTweetLike({ id: tweet.id, userId: user.id });
+                      context?.setRefetch(true);
+                    });
+                  }}
                 />
-                <span className="text-xs text-muted-foreground align-bottom">{tweet.likes.length}</span>
+                <span className="align-bottom text-xs text-muted-foreground">
+                  {tweet.likes.length}
+                </span>
+              </div>
+              <div className="flex gap-2">
+                <Icons.comment className="h-4 w-4 hover:text-main" />
+                <span className="align-bottom text-xs text-muted-foreground">
+                  {tweet.replyCount}
+                </span>
               </div>
             </div>
           </div>

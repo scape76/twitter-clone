@@ -26,6 +26,7 @@ import {
   MoreHorizontal,
   Smile,
   Heart,
+  MessageCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -79,4 +80,5 @@ export const Icons = {
   home: Home,
   smile: Smile,
   like: Heart,
+  comment: MessageCircle,
 };
