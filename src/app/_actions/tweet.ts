@@ -3,7 +3,7 @@
 import { type User } from "next-auth";
 import { db } from "@/db";
 import { type Tweet, tweets, likes } from "@/db/schema";
-import { and, desc, eq, lt } from "drizzle-orm";
+import { and, desc, eq, isNull, lt, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export async function postTweetAction(input: {
@@ -49,6 +49,14 @@ export async function getTweetsByCursor(input: { cursor?: number }) {
       with: {
         author: true,
         likes: true,
+        replyToTweet: true,
+      },
+      where: isNull(tweets.replyToTweetId),
+      extras: {
+        replyCount:
+          sql<string>`(SELECT COUNT(*) FROM ${tweets} r WHERE r.reply_to_post_id = ${tweets.id})`.as(
+            "reply_count"
+          ),
       },
     });
 
@@ -64,12 +72,19 @@ export async function getTweetsByCursor(input: { cursor?: number }) {
     throw new Error("Invalid input.");
   }
   const _tweets = await db.query.tweets.findMany({
-    where: lt(tweets.id, input.cursor),
     orderBy: desc(tweets.created_at),
     limit: numberOfTweets,
     with: {
       author: true,
       likes: true,
+      replyToTweet: true,
+    },
+    where: and(lt(tweets.id, input.cursor), isNull(tweets.replyToTweetId)),
+    extras: {
+      replyCount:
+        sql<string>`(SELECT COUNT(*) FROM ${tweets} r WHERE r.reply_to_post_id = ${tweets.id})`.as(
+          "reply_count"
+        ),
     },
   });
 

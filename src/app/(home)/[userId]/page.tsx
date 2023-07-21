@@ -1,7 +1,7 @@
 import Header from "@/components/layout/Header";
 import { db } from "@/db";
 import { users, tweets } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { notFound, redirect } from "next/navigation";
 import * as React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
@@ -30,6 +30,13 @@ const UserPage: React.FC<UserPageProps> = async ({ params }) => {
     where: eq(tweets.authorId, author.id),
     with: {
       author: true,
+      likes: true,
+    },
+    extras: {
+      replyCount:
+        sql<string>`(SELECT COUNT(*) FROM ${tweets} r WHERE r.reply_to_post_id = ${tweets.id})`.as(
+          "reply_count"
+        ),
     },
   });
 
