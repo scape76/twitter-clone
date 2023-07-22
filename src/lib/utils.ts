@@ -13,7 +13,7 @@ export function getUserLiterals(name?: string | null) {
 }
 
 export function updateImageUrl(profileImgUrl: string, number: number): string {
-  const parts = profileImgUrl.split('=');
-  const newUrl = `${parts[0]}=s${number}-c`;
+  const parts = profileImgUrl.split("=");
+  const newUrl = `${parts?.[0] ?? ""}=s${number}-c`;
   return newUrl;
 }

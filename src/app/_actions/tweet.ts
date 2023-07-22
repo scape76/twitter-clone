@@ -5,6 +5,7 @@ import { db } from "@/db";
 import { type Tweet, tweets, likes } from "@/db/schema";
 import { and, desc, eq, isNull, lt, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { getCurrentUser } from "@/lib/session";
 
 export async function postTweetAction(input: {
   text: string;
@@ -145,4 +146,22 @@ export async function toggleTweetLike(input: {
         and(eq(likes.tweetId, input.id), eq(likes.authorId, input.userId))
       );
   }
+}
+
+export async function replyTweetAction(input: {
+  replyTo: Tweet["id"];
+  text: string;
+  path: string;
+}) {
+  const user = await getCurrentUser();
+
+  if (!user) throw new Error("Not authorized.");
+  
+  await db.insert(tweets).values({
+    authorId: user.id,
+    replyToTweetId: input.replyTo,
+    text: input.text,
+  });
+
+  revalidatePath(input.path);
 }

@@ -53,7 +53,7 @@ const UserPage: React.FC<UserPageProps> = async ({ params }) => {
       <hr className="w-full border-b border-border" />
       <div>
         {authorTweets.map((t) => (
-          <TweetItem tweet={t} user={user} />
+          <TweetItem tweet={t} user={user} key={t.id} />
         ))}
       </div>
     </div>

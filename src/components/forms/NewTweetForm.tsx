@@ -12,12 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { tweetSchema } from "@/lib/validations/tweet";
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { toast } from "../ui/use-toast";
 import { postTweetAction } from "@/app/_actions/tweet";
 import { TweetContext } from "@/components/TweetContextProvider";
@@ -77,50 +72,40 @@ const NewTweetForm: React.FC<NewTweetFormProps> = ({
   }
 
   return (
-    <div className="flex gap-2 border-b border-border p-2">
-      <div>
-        <UserAvatar user={{ name: user.name, image: user.image }} />
-      </div>
-      <div className="w-full">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="text"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Textarea
-                      placeholder="What is happening?!"
-                      className="border-none text-lg font-semibold outline-none"
-                      {...field}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && !e.shiftKey) {
-                          {
-                            /* eslint-disable-next-line */
-                          }
-                          void e.preventDefault;
-                          onSubmit(form.getValues());
-                        }
-                      }}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <div className="flex justify-between">
-              <Button type="button" size={"icon"} variant={"ghost"}>
-                <Icons.smile className="h-4 w-4 text-main" />
-              </Button>
-              <Button type="submit" className="ml-auto" disabled={isPending}>
-                {isPending ? <Spinner className="mr-2 h-4 w-4" /> : null}
-                Tweet
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </div>
-    </div>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="text"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Textarea
+                  placeholder="What is happening?!"
+                  className="border-none text-lg font-semibold outline-none"
+                  {...field}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      onSubmit(form.getValues());
+                    }
+                  }}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <div className="flex justify-between">
+          <Button type="button" size={"icon"} variant={"ghost"}>
+            <Icons.smile className="h-4 w-4 text-main" />
+          </Button>
+          <Button type="submit" className="ml-auto" disabled={isPending}>
+            {isPending ? <Spinner className="mr-2 h-4 w-4" /> : null}
+            Tweet
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 };
 

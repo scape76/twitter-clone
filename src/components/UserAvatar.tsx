@@ -2,14 +2,14 @@ import { type User } from "next-auth";
 import * as React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 
-interface UserAvatarProps extends React.PropsWithoutRef<typeof AvatarImage> {
+interface UserAvatarProps {
   user: {
     name: User["name"];
     image: User["image"];
   };
 }
 
-const UserAvatar: React.FC<UserAvatarProps> = ({ user, ...props }) => {
+const UserAvatar = ({ user }: UserAvatarProps) => {
   const userLiterals = user.name
     ?.split(" ")
     .map((s) => s[0])
@@ -17,7 +17,7 @@ const UserAvatar: React.FC<UserAvatarProps> = ({ user, ...props }) => {
 
   return (
     <Avatar>
-      <AvatarImage src={user.image ?? undefined} {...props} />
+      <AvatarImage src={user.image ?? ""} />
       <AvatarFallback>{userLiterals}</AvatarFallback>
     </Avatar>
   );

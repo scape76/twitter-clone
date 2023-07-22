@@ -30,6 +30,7 @@ const Feed = ({ user }: FeedProps) => {
     useInfiniteQuery(
       ["query"],
       async ({ pageParam: cursor = undefined }) => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const data = await getTweetsByCursor({ cursor });
         return data;
       },
@@ -41,7 +42,7 @@ const Feed = ({ user }: FeedProps) => {
     );
 
   if (context?.refetch) {
-    refetch();
+    void refetch();
     context.setRefetch(false);
   }
 
@@ -73,7 +74,7 @@ const Feed = ({ user }: FeedProps) => {
               </div>
             );
           }
-          return <TweetItem tweet={tweet} user={user} />;
+          return <TweetItem tweet={tweet} user={user} key={tweet.id} />;
         })
       )}
     </div>

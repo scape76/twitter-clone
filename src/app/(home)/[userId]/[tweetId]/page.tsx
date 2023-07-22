@@ -1,3 +1,4 @@
+import TweetFeedback from "@/components/tweet/TweetFeedback";
 import TweetItem from "@/components/tweet/TweetItem";
 import { db } from "@/db";
 import { tweets } from "@/db/schema";
@@ -21,6 +22,13 @@ const TweetPage: React.FC<TweetPageProps> = async ({ params }) => {
     with: {
       author: true,
       likes: true,
+      replyToTweet: {
+        with: {
+          author: true,
+          likes: true,
+          replyToTweet: true,
+        },
+      },
     },
     extras: {
       replyCount:
@@ -30,13 +38,39 @@ const TweetPage: React.FC<TweetPageProps> = async ({ params }) => {
     },
   });
 
+  const replies = await db.query.tweets.findMany({
+    where: eq(tweets.replyToTweetId, tweetId),
+    with: {
+      author: true,
+      likes: true,
+    },
+    extras: {
+      replyCount:
+        sql<string>`(SELECT COUNT(*) FROM ${tweets} r WHERE r.reply_to_post_id = ${tweets.id})`.as(
+          "reply_count"
+        ),
+    },
+  });
+
+  console.log(replies);
+
   if (!tweet) notFound();
 
   const user = await getCurrentUser();
 
   if (!user) redirect("/login");
 
-  return <TweetItem tweet={tweet} user={user} isPage={true}/>;
+  return (
+    <>
+      {/* <TweetItem tweet={tweet.replyToTweet} user={user} isPage={false} /> */}
+      <TweetItem tweet={tweet} user={user} isPage={true} />
+      <div>
+        {replies.map((r) => {
+          return <TweetItem tweet={r} user={user} isPage={false} />;
+        })}
+      </div>
+    </>
+  );
 };
 
 export default TweetPage;
