@@ -14,8 +14,8 @@ import dayjs from "dayjs";
 import { User } from "next-auth";
 import { TweetContext } from "@/components/TweetContextProvider";
 import { Spinner } from "./Icons";
-import TweetOperations from "./TweetOperations";
-import TweetItem from "./TweetItem";
+import TweetOperations from "./tweet/TweetOperations";
+import TweetItem from "./tweet/TweetItem";
 
 dayjs.extend(relativeTime);
 

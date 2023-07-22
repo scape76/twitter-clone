@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  code-racer-db:
+    image: mysql
+    restart: always
+    container_name: twitter-clone-mysql
+    ports:
+      - 5556:5556
+    environment:
+      POSTGRES_PASSWORD: example
+      PGDATA: /data/mysql
+    volumes:
+      - mysql:/data/mysql
+
+volumes:
+  mysql:

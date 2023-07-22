@@ -6,7 +6,7 @@ import { notFound, redirect } from "next/navigation";
 import * as React from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { getUserLiterals, updateImageUrl } from "@/lib/utils";
-import TweetItem from "@/components/TweetItem";
+import TweetItem from "@/components/tweet/TweetItem";
 import { getCurrentUser } from "@/lib/session";
 
 interface UserPageProps {

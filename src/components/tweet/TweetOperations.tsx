@@ -6,7 +6,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "./ui/DropdownMenu";
+} from "../ui/DropdownMenu";
 import {
   AlertDialog,
   AlertDialogAction,
