@@ -1,11 +1,9 @@
 import * as React from "react";
 import type { Tweet } from "@/db/schema";
 import Link from "next/link";
-import relativeTime from "dayjs/plugin/relativeTime";
-import dayjs from "dayjs";
 import { cn } from "@/lib/utils";
+import TweetTime from "./TweetTime";
 
-dayjs.extend(relativeTime);
 interface TweetHeaderProps {
   tweet: Pick<Tweet, "authorId" | "created_at"> & {
     author: {
@@ -25,9 +23,7 @@ const TweetHeader: React.FC<TweetHeaderProps> = ({ tweet, isPage }) => {
       {isPage ? (
         <span className="font-thin">{tweet.author.slug}</span>
       ) : (
-        <span className="font-thin">{` · ${dayjs(
-          tweet.created_at
-        ).fromNow()}`}</span>
+        <TweetTime createdAt={tweet.created_at} isPage={isPage} />
       )}
     </div>
   );

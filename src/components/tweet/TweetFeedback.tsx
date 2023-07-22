@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Icons } from "@/components/Icons";
 import { toggleTweetLike } from "@/app/_actions/tweet";
 import { TweetContext } from "../TweetContextProvider";
+import TweetReply from "./TweetReply";
 
 interface TweetFeedbackProps {
   tweet: Tweet & { author: User } & { likes: Like[] } & { replyCount: string };
@@ -24,7 +25,41 @@ const TweetFeedback: React.FC<TweetFeedbackProps> = ({
   const [isPending, startTransition] = React.useTransition();
 
   if (isPage) {
-    return null;
+    return (
+      <div className="flex flex-col">
+        <hr className="w-full border-b border-border" />
+        <div className="flex items-center gap-2 py-2 text-muted-foreground">
+          <span>
+            <span className="text-accent-foreground">{tweet.likes.length}</span>{" "}
+            Likes
+          </span>
+          <span>
+            <span className="text-accent-foreground">{tweet.replyCount}</span>{" "}
+            Comments
+          </span>
+        </div>
+        <hr className="w-full border-b border-border" />
+        <div className="flex items-center gap-4 py-2 text-muted-foreground">
+          <Icons.like
+            className={cn("h-6 w-6 cursor-pointer hover:text-red-500", {
+              "text-red-500 hover:text-main": tweet.likes.some(
+                (like) => like.authorId === user.id
+              ),
+            })}
+            onClick={(e) => {
+              if (isPending) return;
+              startTransition(() => {
+                e.preventDefault();
+                console.log("like");
+              });
+            }}
+          />
+          <Icons.comment className="h-6 w-6 cursor-pointer hover:text-main" />
+        </div>
+        <hr className="w-full border-b border-border" />
+        <TweetReply user={user} replyTo={tweet.id} />
+      </div>
+    );
   }
 
   return (

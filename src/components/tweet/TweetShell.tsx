@@ -4,10 +4,6 @@ import type { User } from "next-auth";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
 import { cn, getUserLiterals } from "@/lib/utils";
 import TweetHeader from "./TweetHeader";
-import dayjs from "dayjs";
-import localizedFormat from "dayjs/plugin/localizedFormat";
-
-dayjs.extend(localizedFormat);
 
 interface TweetShellProps {
   tweet: Tweet & { author: User } & { likes: Like[] } & { replyCount: string };
@@ -18,7 +14,11 @@ interface TweetShellProps {
 
 const TweetShell = ({ tweet, user, isPage, children }: TweetShellProps) => {
   return (
-    <div className="flex flex-col gap-2 relative border-b border-border p-2 hover:bg-accent">
+    <div
+      className={cn("relative flex flex-col gap-2 border-b border-border p-2", {
+        "hover:bg-accent": !isPage,
+      })}
+    >
       <div className="flex items-center gap-2">
         <div className={cn({ "self-start": !isPage })}>
           <Avatar>

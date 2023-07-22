@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import type { Tweet, Like } from "@/db/schema";
 import type { User } from "next-auth";
@@ -10,8 +8,7 @@ import TweetOperations from "./TweetOperations";
 import { cn } from "@/lib/utils";
 import TweetShell from "./TweetShell";
 import TweetFeedback from "./TweetFeedback";
-
-dayjs.extend(relativeTime);
+import TweetTime from "./TweetTime";
 
 interface TweetItemProps {
   tweet: Tweet & { author: User } & { likes: Like[] } & { replyCount: string };
@@ -20,27 +17,28 @@ interface TweetItemProps {
 }
 
 function TweetItem({ tweet, user, isPage }: TweetItemProps) {
-  return (
-    <Link href={`/${tweet.authorId}/${tweet.id}`}>
-      <TweetShell tweet={tweet} user={user} isPage={isPage}>
-        <span
-          className={cn("max-w-full text-clip break-all", {
-            "text-xl": isPage,
-          })}
-        >
-          {tweet.text}
-        </span>
-        <TweetFeedback tweet={tweet} user={user} isPage={isPage}/>
-        {isPage && (
-          <span className="font-thin">{`${dayjs(tweet.created_at).format(
-            "LT"
-          )}  · ${dayjs(tweet.created_at).format("ll")}`}</span>
-        )}
-        {user.id === tweet.authorId && (
-          <TweetOperations tweetId={tweet.id} userId={user.id} />
-        )}
-      </TweetShell>
-    </Link>
+  const tweetContent = (
+    <TweetShell tweet={tweet} user={user} isPage={isPage}>
+      <span
+        className={cn("max-w-full text-clip break-all", {
+          "text-xl": isPage,
+        })}
+      >
+        {tweet.text}
+      </span>
+      {!isPage && <TweetFeedback tweet={tweet} user={user} isPage={isPage} />}
+      {isPage && <TweetTime createdAt={tweet.created_at} isPage={isPage} />}
+      {user.id === tweet.authorId && (
+        <TweetOperations tweetId={tweet.id} userId={user.id} />
+      )}
+      {isPage && <TweetFeedback tweet={tweet} user={user} isPage={isPage} />}
+    </TweetShell>
+  );
+
+  return isPage ? (
+    tweetContent
+  ) : (
+    <Link href={`/${tweet.authorId}/${tweet.id}`}>{tweetContent}</Link>
   );
 }
 
