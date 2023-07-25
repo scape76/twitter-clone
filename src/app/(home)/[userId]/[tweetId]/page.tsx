@@ -1,3 +1,4 @@
+import ParentTweet from "@/components/ParentTweet";
 import TweetFeedback from "@/components/tweet/TweetFeedback";
 import TweetItem from "@/components/tweet/TweetItem";
 import { db } from "@/db";
@@ -27,6 +28,12 @@ const TweetPage: React.FC<TweetPageProps> = async ({ params }) => {
           author: true,
           likes: true,
           replyToTweet: true,
+        },
+        extras: {
+          replyCount:
+            sql<string>`(SELECT COUNT(*) FROM ${tweets} r WHERE r.reply_to_post_id = ${tweets.id})`.as(
+              "reply_count"
+            ),
         },
       },
     },
@@ -62,7 +69,9 @@ const TweetPage: React.FC<TweetPageProps> = async ({ params }) => {
 
   return (
     <>
-      {/* <TweetItem tweet={tweet.replyToTweet} user={user} isPage={false} /> */}
+      {tweet.replyToTweetId && (
+        <ParentTweet parentId={tweet.replyToTweetId} user={user} isPage={false} />
+      )}
       <TweetItem tweet={tweet} user={user} isPage={true} />
       <div>
         {replies.map((r) => {
